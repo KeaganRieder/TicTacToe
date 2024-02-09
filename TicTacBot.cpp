@@ -2,13 +2,14 @@
 
 TicTacBot::TicTacBot(char icon)
 {
+    isMax = false;
     botIcon = icon;
 }
 TicTacBot::~TicTacBot()
 {
 }
 
-int TicTacBot::FindBestMove(Board board, int depth)
+int TicTacBot::FindBestMove(Board& board)
 {
     // check for scoure
     int score = board.CheckForVictor();
@@ -20,7 +21,7 @@ int TicTacBot::FindBestMove(Board board, int depth)
     }
 
     // no more moves
-    else if (board.SpacesLeft())
+    else if (!board.SpacesLeft())
     {
         return 0;
     }
@@ -28,17 +29,17 @@ int TicTacBot::FindBestMove(Board board, int depth)
     // maximizers move
     if (isMax)
     {
-        return DoMaxTurn(board, depth);
+        return DoMaxTurn(board);
     }
 
     // minimizers move
     else
     {
-        return DoMinTurn(board, depth);
+        return DoMinTurn(board);
     }
 }
 
-int TicTacBot::DoMaxTurn(Board board, int depth)
+int TicTacBot::DoMaxTurn(Board& board)
 {
     int bestMove = -10000;
 
@@ -52,7 +53,7 @@ int TicTacBot::DoMaxTurn(Board board, int depth)
                 board[row][col] = botIcon;
 
                 isMax = !isMax;
-                bestMove = std::max(bestMove, FindBestMove(board, depth+1));
+                bestMove = std::max(bestMove, FindBestMove(board));
 
                 //undo move 
                 board[row][col] = '_';
@@ -63,7 +64,7 @@ int TicTacBot::DoMaxTurn(Board board, int depth)
     return bestMove;
 }
 
-int TicTacBot::DoMinTurn(Board board, int depth)
+int TicTacBot::DoMinTurn(Board& board)
 {
     int bestMove = 10000;
 
@@ -77,7 +78,7 @@ int TicTacBot::DoMinTurn(Board board, int depth)
                 board[row][col] = botIcon;
 
                 isMax = !isMax;
-                bestMove = std::min(bestMove, FindBestMove(board, depth+1));
+                bestMove = std::min(bestMove, FindBestMove(board));
 
                 //undo move 
                 board[row][col] = '_';
@@ -88,7 +89,7 @@ int TicTacBot::DoMinTurn(Board board, int depth)
     return bestMove;
 }
 
-Move TicTacBot::PerformTurn(Board board)
+Move TicTacBot::PerformTurn(Board& board)
 {
     int best = -1000;
     Move move;
@@ -104,9 +105,10 @@ Move TicTacBot::PerformTurn(Board board)
             {
                 //make move
                 board[row][col] = botIcon;
-
-                isMax = false;
-                int moveValue = FindBestMove(board, 0);
+                 
+                // isMax = false;
+                int moveValue = FindBestMove(board);
+                std::cout<<"\n move "<<moveValue<<"\n";
 
                 board[row][col] = '_';
 
@@ -122,6 +124,5 @@ Move TicTacBot::PerformTurn(Board board)
             }
         }
     }
-
     return move;
 }

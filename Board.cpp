@@ -30,8 +30,8 @@ char Board::GetPlayerIcon()
 
 bool Board::PlacePlayerIcon(int row, int col)
 {
-    bool validRow = row <= BOARD_ROWS || row >= 0;
-    bool validCol = col <= BOARD_COLS || col >= 0;
+    bool validRow = row <= BOARD_ROWS && row >= 0;
+    bool validCol = col <= BOARD_COLS && col >= 0;
     // make sure space is unocupied
     if (contents[row][col] == '_' && validCol && validRow)
     {
@@ -50,22 +50,10 @@ char Board::GetBotIcon()
 {
     return botIcon;
 }
-// bool Board::PlaceComputerIcon(int row, int col)
-// {
-
-//     // make sure space is unocupied
-//     if (contents[row][col] == '_')
-//     {
-//         contents[row][col] = botIcon;
-//         return true;
-//     }
-
-//     return false;
-// }
-// bool Board::PlaceComputerIcon(Move move)
-// {
-//     return PlaceComputerIcon(move.row, move.col);
-// }
+void Board::PlaceBotIcon(int row, int col)
+{
+    contents[row][col] = botIcon;   
+}
 
 //
 // function handling board implementaion
@@ -167,7 +155,6 @@ int Board::CheckForVictor()
 
 void Board::PrintBoard()
 {
-
     std::cout << "\n> Here is the board on turn " << turn << " \n\n";
     
     std::cout << "-------------\n";

@@ -1,7 +1,7 @@
 # Makefile for  missionaries and cannibals problem solver program 
 
 # programs and their associated classes
-PROGRAM_NAME = TICTACTOE
+PROGRAM_NAME = TicTacToe
 
 CLASS = Board
 CLASS2 = TicTacBot

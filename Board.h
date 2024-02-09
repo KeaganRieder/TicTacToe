@@ -40,8 +40,7 @@ public:
     char GetBotIcon();
     // returns true if valid move (empty space) otherwise
     // returns false
-    // bool PlaceBotIcon(int row, int col);
-    // bool PlaceBotIcon(Move move);
+    void PlaceBotIcon(int row, int col);
 
     //
     // functions handling the board

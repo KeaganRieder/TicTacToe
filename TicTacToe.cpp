@@ -31,6 +31,9 @@ void PrintGameResults(Board *board);
 // game loop determining who plays
 void Play(Board *board, TicTacBot *bot);
 
+//prints results of game
+void PrintGameResults(Board& board);
+
 //
 // main program loop
 //
@@ -39,7 +42,7 @@ int main()
     Board *board = new Board();
     TicTacBot *bot = nullptr;
 
-    std::cout << "\n<<< Welcome to Tic Tac Toe >>> \n";
+    std::cout << "<<< Welcome to Tic Tac Toe >>> \n";
 
     SelectToken(board);
     bot = new TicTacBot(board->GetBotIcon());
@@ -58,7 +61,7 @@ int main()
             break;
         }
     }
-    PrintGameResults(board);
+    PrintGameResults(*board);
 
     delete board;
     delete bot;
@@ -106,13 +109,13 @@ void Play(Board *board, TicTacBot *bot)
 {
     int row = -1;
     int col = -1;
-
+    Move botMove;
     board->PrintBoard();
 
     if (playerTurn)
     {
         std::cout << "\n<<< Players Turn >>> \n";
-        std::cout << "\n> What is your move? \n > ";
+        std::cout << "\n> What is your move? \n> ";
 
         //
         while (true)
@@ -124,14 +127,14 @@ void Play(Board *board, TicTacBot *bot)
             {
                 break;
             }
-            std::cout << "\n" << row << "\n";
-            std::cout << "\n" << col << "\n";
-            std::cout << "\nPlease sellect valid move \n>";
+            std::cout << "\nPlease select valid move \n> ";
         }
     }
     else
     {
         std::cout << "\n<<< Bots Turn >>> \n";
+        botMove = bot->PerformTurn(*board);
+        board->PlaceBotIcon(botMove.row,botMove.col);
     }
 
     // increase turn
@@ -139,12 +142,12 @@ void Play(Board *board, TicTacBot *bot)
     playerTurn = !playerTurn;
 }
 
-void PrintGameResults(Board *board)
+void PrintGameResults(Board& board)
 {
-    int victorVal = board->CheckForVictor();
+    int victorVal = board.CheckForVictor();
     std::cout << "\n<<< Games result are >>> \n";
 
-    board->PrintBoard();
+    board.PrintBoard();
 
     std::cout << "\n> The victor is ";
 
