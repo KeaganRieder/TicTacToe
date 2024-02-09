@@ -34,8 +34,7 @@ public:
     char GetPlayerIcon();
     // returns true if valid move (empty space) otherwise
     // returns false
-    // bool PlacePlayerIcon(int row, int col);
-    // bool PlacePlayerIcon(Move move);
+    bool PlacePlayerIcon(int row, int col);
 
     void SetBotIcon(char icon);
     char GetBotIcon();
@@ -65,6 +64,10 @@ public:
     // 1 if player victory and -1 if bots
     int CheckForVictor();
 
+    void IncreaseTurn(){
+        turn++;
+    }
+
     // prints out the board and current turn to terminal
     void PrintBoard();
 
@@ -76,10 +79,6 @@ public:
     char *operator[](int index)
     {
         return contents[index];
-    }
-    int &operator+=(int value)
-    {
-       return turn += value;
     }
 };
 

@@ -28,22 +28,19 @@ char Board::GetPlayerIcon()
     return playerIcon;
 }
 
-// bool Board::PlacePlayerIcon(int row, int col)
-// {
+bool Board::PlacePlayerIcon(int row, int col)
+{
+    bool validRow = row <= BOARD_ROWS || row >= 0;
+    bool validCol = col <= BOARD_COLS || col >= 0;
+    // make sure space is unocupied
+    if (contents[row][col] == '_' && validCol && validRow)
+    {
+        contents[row][col] = playerIcon;
+        return true;
+    }
 
-//     // make sure space is unocupied
-//     if (contents[row][col] == '_')
-//     {
-//         contents[row][col] = playerIcon;
-//         return true;
-//     }
-
-//     return false;
-// }
-// bool Board::PlacePlayerIcon(Move move)
-// {
-//     return PlacePlayerIcon(move.row, move.col);
-// }
+    return false;
+}
 
 void Board::SetBotIcon(char icon)
 {
@@ -172,7 +169,7 @@ void Board::PrintBoard()
 {
 
     std::cout << "\n> Here is the board on turn " << turn << " \n\n";
-
+    
     std::cout << "-------------\n";
     for (int row = 0; row < BOARD_ROWS; row++)
     {

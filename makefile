@@ -13,7 +13,7 @@ CC_VERSION= -std=c++11
 CC_FLAGS= $(CC_VERSION) -Wall
 
 #files for Projects
-OBJS = $(CLASS).0 $(MAIN).0 $(PROGRAM_NAME).0
+# OBJS = $(CLASS).0 $(CLASS2).0 $(MAIN).0 $(PROGRAM_NAME).0
 
 # Default goal
 .DEFAULT_GOAL := all
@@ -35,8 +35,9 @@ $(CLASS2).o: $(CLASS2).cpp $(CLASS2).h
 $(MAIN).o: $(MAIN).cpp $(CLASS).h  $(CLASS2).h
 	$(CC) $(CFLAGS) -c $(MAIN).cpp
 
+#clean targets  
 clean:
-	$(RM) -f $(PROGRAM_NAME) $(CLASS).o $(CLASS2). $(MAIN).o
+	$(RM) -f $(PROGRAM_NAME) $(CLASS).o $(CLASS2).o $(MAIN).o
 
 clean-all: clean
 	rm -rf ${PROGRAM_NAME} 
