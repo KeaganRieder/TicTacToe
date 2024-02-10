@@ -45,7 +45,7 @@ int main()
     std::cout << "<<< Welcome to Tic Tac Toe >>> \n";
 
     SelectToken(board);
-    bot = new TicTacBot(board->GetBotIcon());
+    bot = new TicTacBot(board->GetBotIcon(), board->GetPlayerIcon());
 
     while (true)
     {
@@ -109,15 +109,16 @@ void Play(Board *board, TicTacBot *bot)
 {
     int row = -1;
     int col = -1;
-    Move botMove;
+    std::pair<int,int> botMove;
+
     board->PrintBoard();
 
     if (playerTurn)
     {
         std::cout << "\n<<< Players Turn >>> \n";
-        std::cout << "\n> What is your move? \n> ";
+        std::cout << "\n> Please input the cords of your next move ensuring it's within\n"
+                <<"the values of 1-3 and in the format: row col\n> ";
 
-        //
         while (true)
         {
             std::cin >> row >> col;
@@ -127,14 +128,15 @@ void Play(Board *board, TicTacBot *bot)
             {
                 break;
             }
-            std::cout << "\nPlease select valid move \n> ";
+            std::cout << "\nPlease select valid move ensuring that it's within\n"
+                    <<"the values of 1-3 and in the format: row col\n> ";
         }
     }
     else
     {
         std::cout << "\n<<< Bots Turn >>> \n";
         botMove = bot->PerformTurn(*board);
-        board->PlaceBotIcon(botMove.row,botMove.col);
+        board->PlaceBotIcon(botMove.first,botMove.second);
     }
 
     // increase turn
@@ -151,11 +153,11 @@ void PrintGameResults(Board& board)
 
     std::cout << "\n> The victor is ";
 
-    if (victorVal == 1)
+    if (victorVal == PLAYER_WIN)
     {
         std::cout << "The Player \n";
     }
-    else if (victorVal == -1)
+    else if (victorVal == BOT_WIN)
     {
         std::cout << "Tic Tac Bot \n";
     }

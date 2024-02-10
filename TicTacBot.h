@@ -2,14 +2,10 @@
 #define TICTACBOT_H
 
 #include "Board.h"
-//https://www.geeksforgeeks.org/minimax-algorithm-in-game-theory-set-4-alpha-beta-pruning/
-//struct uses to pass a  the cords of the given move
-struct Move
-{
-    int row;
-    int col;
-};
+#include "map"
 
+const int MAX = 1000;
+const int MIN = -1000;
 
 // Summary
 // defining function for used by the tic tac toe bot
@@ -20,23 +16,28 @@ private:
     // used to dertime if max or mins turn
     bool isMax;
     char botIcon;
+    char playerIcon;
 
 public:
-    TicTacBot(char icon);
+    TicTacBot(char botIcon, char playerIcon);
     ~TicTacBot();
 
     // function which uses a minimax algorthim. it considers all possible
     // moves given the current state
-    int FindBestMove(Board &board);
+    int FindBestMove(Board board, int depth, int alpha, int beta);
 
-    // perfoms the max side of the Minimax algorthim
-    int DoMaxTurn(Board &board);
+    // tries to guess where the Bots will place there token based
+    // the most optimal move given the current board
+    int DoMaxTurn(Board board, int depth, int alpha, int beta);
 
-    // perfoms the min side of the Minimax algorthim
-    int DoMinTurn(Board &board);
+    // tries to guess where the player will place there token based
+    // the most optimal move given the current board
+    int DoMinTurn(Board board, int depth, int alpha, int beta);
 
     // returns the best possible move for the computer of bot
-    Move PerformTurn(Board &board);
+    // move is represnt as a pair in which first = row
+    // second = col
+    std::pair<int,int> PerformTurn(Board board);
 };
 
 #endif

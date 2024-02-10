@@ -8,8 +8,9 @@
 //
 // Board const
 //
-const int BOARD_ROWS = 3;
-const int BOARD_COLS = 3;
+const int BOARD_SIZE = 3;
+const int BOT_WIN = 1;
+const int PLAYER_WIN = -1;
 
 // Summary
 // Board defines the tic tac toe board, allowing
@@ -19,7 +20,7 @@ class Board
 private:
     // contains the content of the board which is
     // represnt as a 3 x 3 matirx of chars
-    char contents[BOARD_ROWS][BOARD_COLS];
+    char contents[BOARD_SIZE][BOARD_SIZE];
     char playerIcon;
     char botIcon;
     int turn;
@@ -60,7 +61,7 @@ public:
     // this also acts as evaluate function used by the bot
     // to dertimnine it's move.
     // function returns 0 if no victors present,
-    // 1 if player victory and -1 if bots
+    // -1 if player victory and 1 if bots
     int CheckForVictor();
 
     void IncreaseTurn(){

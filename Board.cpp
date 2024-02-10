@@ -6,9 +6,9 @@ Board::Board()
     playerIcon = ' ';
     botIcon = ' ';
 
-    for (int row = 0; row < BOARD_ROWS; row++)
+    for (int row = 0; row < BOARD_SIZE; row++)
     {
-        for (int col = 0; col < BOARD_COLS; col++)
+        for (int col = 0; col < BOARD_SIZE; col++)
         {
             contents[row][col] = '_';
         }
@@ -30,8 +30,10 @@ char Board::GetPlayerIcon()
 
 bool Board::PlacePlayerIcon(int row, int col)
 {
-    bool validRow = row <= BOARD_ROWS && row >= 0;
-    bool validCol = col <= BOARD_COLS && col >= 0;
+    row -= 1;
+    col -= 1;
+    bool validRow = row <= BOARD_SIZE && row >= 0;
+    bool validCol = col <= BOARD_SIZE && col >= 0;
     // make sure space is unocupied
     if (contents[row][col] == '_' && validCol && validRow)
     {
@@ -66,9 +68,9 @@ bool Board::SpaceEmpty(int row, int col){
 bool Board::SpacesLeft()
 {
     int spacesLeft = 0;
-    for (int row = 0; row < BOARD_ROWS; row++)
+    for (int row = 0; row < BOARD_SIZE; row++)
     {
-        for (int col = 0; col < BOARD_COLS; col++)
+        for (int col = 0; col < BOARD_SIZE; col++)
         {
             if (SpaceEmpty(row,col))
             {
@@ -82,74 +84,53 @@ bool Board::SpacesLeft()
     return spacesLeft > 0;
 }
 
-int Board::CheckForVictor()
-{
-    // check rows for player or bot victory
-    for (int row = 0; row < BOARD_ROWS; row++)
+int Board::CheckForVictor(){
+    bool playerWin = false;
+    bool botWin = false;
+
+    // checking if player or bot one on either colums or rows
+
+    for (int i = 0; i < BOARD_SIZE; i++)
     {
-        if (contents[row][0] == contents[row][1] && contents[row][1] == contents[row][2])
+        bool rowWin = contents[i][0] == contents[i][1] && contents[i][1] == contents[i][2];
+        bool colWin = contents[0][i] == contents[1][i] && contents[1][i] == contents[2][i];
+
+        bool playerWin = (contents[i][0] == playerIcon && rowWin) || (contents[0][i] == playerIcon && colWin);
+
+        bool botWin = (contents[i][0] == botIcon && rowWin) || (contents[0][i] == botIcon && colWin);
+
+        // return 1 menaing player one on either a col or row
+        if (playerWin)
         {
-            // player victory
-            if (contents[row][0] == playerIcon)
-            {
-                return 1;
-            }
-            // bot victory
-            else if (contents[row][0] == botIcon)
-            {
-                return -1;
-            }
+            return PLAYER_WIN;
         }
+        // return -1 menaing bot one on either a col or row
+        else if (botWin)
+        {
+            return BOT_WIN;
+        }     
     }
 
-    // check col for player or bot victory
-    for (int col = 0; col < BOARD_COLS; col++)
-    {
-        if (contents[0][col] == contents[1][col] && contents[1][col] == contents[2][col])
-        {
-            // player victory
-            if (contents[0][col] == playerIcon)
-            {
-                return 1;
-            }
-            // bot victory
-            else if (contents[0][col] == botIcon)
-            {
-                return -1;
-            }
-        }
-    }
+    //check on diagonals
+    //top left to bot right diagonal
+    bool diaOne = contents[0][0] == contents[1][1] && contents[1][1] == contents[2][2];
+    //top right to bot left diagonal
+    bool diaTwo = contents[2][0] == contents[1][1] && contents[1][1] == contents[0][2];
 
-    // check diagonals
-    if (contents[0][0] == contents[1][1] && contents[1][1] == contents[2][2])
+    playerWin = contents[1][1] == playerIcon && (diaOne || diaTwo);
+    botWin = contents[1][1] == botIcon && (diaOne || diaTwo);
+
+    // return 1 menaing player one on either diagonal
+    if (playerWin)
     {
-        // player victory
-        if (contents[0][0] == playerIcon)
-        {
-            return 1;
-        }
-        // bot victory
-        else if (contents[0][0] == botIcon)
-        {
-            return -1;
-        }
+        return PLAYER_WIN;
     }
-    
-    else if (contents[2][0] == contents[1][1] && contents[1][1] == contents[0][2])
+    // return -1 menaing bot one on either diagonal
+    else if (botWin)
     {
-        // player victory
-        if (contents[2][0] == playerIcon)
-        {
-            return 1;
-        }
-        // bot victory
-        else if (contents[2][0] == botIcon)
-        {
-            return -1;
-        }
-    }
-    
-    // no one won
+        return BOT_WIN;
+    }  
+    //return 0 meaning a tie
     return 0;
 }
 
@@ -158,10 +139,10 @@ void Board::PrintBoard()
     std::cout << "\n> Here is the board on turn " << turn << " \n\n";
     
     std::cout << "-------------\n";
-    for (int row = 0; row < BOARD_ROWS; row++)
+    for (int row = 0; row < BOARD_SIZE; row++)
     {
         std::cout << "|";
-        for (int col = 0; col < BOARD_COLS; col++)
+        for (int col = 0; col < BOARD_SIZE; col++)
         {
             std::cout << " " << contents[row][col] << " |";
         }

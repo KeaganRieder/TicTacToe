@@ -37,7 +37,7 @@ $(MAIN).o: $(MAIN).cpp $(CLASS).h  $(CLASS2).h
 
 #clean targets  
 clean:
-	$(RM) -f $(PROGRAM_NAME) $(CLASS).o $(CLASS2).o $(MAIN).o
+	rm -rf *~ *.o
 
 clean-all: clean
 	rm -rf ${PROGRAM_NAME} 
