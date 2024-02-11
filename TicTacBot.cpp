@@ -5,24 +5,21 @@ TicTacBot::TicTacBot(char botIcon, char playerIcon)
     this->botIcon = botIcon;
     this->playerIcon = playerIcon;
 
-    //initalize all possible actions
+    // initalize all possible actions
     for (int row = 0; row < BOARD_SIZE; row++)
     {
         for (int col = 0; col < BOARD_SIZE; col++)
         {
-            std::pair<int,int> move;
-            move.first = row;
-            move.second = col;
+            std::pair<int, int> move; move.first = row; move.second = col;
             possibleActions.push_back(move);
         }
     }
-    
 }
 TicTacBot::~TicTacBot()
 {
 }
 
-int TicTacBot::FindBestMove(Board board, int depth, int alpha, int beta)
+int TicTacBot::FindBestMove(Board board, bool isMax, int alpha, int beta)
 {
     int bestMove;
 
@@ -47,108 +44,110 @@ int TicTacBot::FindBestMove(Board board, int depth, int alpha, int beta)
 
     // if none of the above contunie recursion
     // bouncing back and forth between min and max
-
     if (isMax)
     {
-       return DoMaxTurn(board, depth, alpha, beta);
+        return DoMaxTurn(board, alpha, beta);
     }
 
     // do mins turn
     else
     {
-       return DoMinTurn(board, depth, alpha, beta);
+        return DoMinTurn(board, alpha, beta);
     }
 }
 
-int TicTacBot::DoMaxTurn(Board board, int depth, int alpha, int beta)
+int TicTacBot::DoMaxTurn(Board board, int alpha, int beta)
 {
     // do max's turn
     int bestMove = MIN;
 
-    for (int row = 0; row < BOARD_SIZE; row++)
+    for (auto &&action : possibleActions)
     {
-        for (int col = 0; col < BOARD_SIZE; col++)
+        int row = action.first;
+        int col = action.second;
+        if (board.SpaceEmpty(row, col))
         {
-            
-            if (board.SpaceEmpty(row, col))
-            {
-                // make move
-                board[row][col] = botIcon;
+            // make move
+            board[row][col] = 'x';
 
-                isMax = !isMax;
-                int val = FindBestMove(board, depth + 1, alpha, beta);
-                bestMove = std::max(bestMove, val);
-                alpha = std::max(alpha, bestMove);
+            int val = FindBestMove(board, false, alpha, beta);
+            bestMove = std::max(bestMove, val);
+            alpha = std::max(alpha, bestMove);
 
-                // undo move
-                board[row][col] = '_';
-            }
+            // undo move
+            board[row][col] = '_';
+        }
 
-            //perfom alpha beta pruining
-            if (beta <= alpha)
-            {
-                break;
-            }
+        // perfom alpha beta pruining
+        if (beta <= alpha)
+        {
+            break;
         }
     }
 
     return bestMove;
 }
 
-//rewrite this to be all possible moves rather then
-// how it is
-int TicTacBot::DoMinTurn(Board board, int depth, int alpha, int beta)
+int TicTacBot::DoMinTurn(Board board, int alpha, int beta)
 {
     int bestMove = MAX;
 
-    for (int row = 0; row < BOARD_SIZE; row++)
+    for (auto &&action : possibleActions)
     {
-        for (int col = 0; col < BOARD_SIZE; col++)
+        int row = action.first;
+        int col = action.second;
+        if (board.SpaceEmpty(row, col))
         {
-            if (board.SpaceEmpty(row, col))
-            {
-                // make move
-                board[row][col] = playerIcon;
+            // make move
+            board[row][col] = 'o';
 
-                isMax = !isMax;
-                int val = FindBestMove(board, depth + 1, alpha, beta);
-                bestMove = std::min(bestMove, val);
-                beta = std::min(beta, bestMove);
-                // undo move
-                board[row][col] = '_';
-            }
+            int val = FindBestMove(board, true, alpha, beta);
+            bestMove = std::min(bestMove, val);
+            beta = std::min(beta, bestMove);
 
-            //perfom alpha beta pruining
-            if (beta <= alpha)
-            {
-                break;
-            }
+            // undo move
+            board[row][col] = '_';
+        }
+
+        // perfom alpha beta pruining
+        if (beta <= alpha)
+        {
+            break;
         }
     }
-
     return bestMove;
 }
 
 std::pair<int, int> TicTacBot::PerformTurn(Board board)
 {
-    int best = -1000;
-    std::pair<int, int> move;
-    move.first = -1;
-    move.second = -1;
+    int best;
+    std::pair<int, int> move; move.first = -1; move.second = -1;
 
-    // move through the board
-    for (int row = 0; row < BOARD_SIZE; row++)
+    if (botIcon == 'o')
     {
-        for (int col = 0; col < BOARD_SIZE; col++)
-        {
-            // check if space is ocupied
-            if (board.SpaceEmpty(row, col))
-            {
-                // make bots move
-                board[row][col] = botIcon;
+        best = -1000;
+    }
+    else
+    {
+        best = 1000;
+    }
 
-                isMax = false;
-                int moveValue = FindBestMove(board, 0, MIN, MAX);
+    for (auto &&action : possibleActions)
+    {
+        int row = action.first;
+        int col = action.second;
+        // check if space is ocupied
+        if (board.SpaceEmpty(row, col))
+        {
+            // check if bot is player o
+            if (botIcon == 'o')
+            { 
+                // make bots move
+                board[row][col] = 'o';
+
+                //sense player 0 run max algorithim first
+                //due to it handling placing player x
+                int moveValue = FindBestMove(board, true, MIN, MAX);
 
                 // undo
                 board[row][col] = '_';
@@ -158,12 +157,33 @@ std::pair<int, int> TicTacBot::PerformTurn(Board board)
                 if (moveValue > best)
                 {
                     best = moveValue;
-                    move.first = row;
-                    move.second = col;
+                    move = action;
+                }
+            }
+
+            // or player x
+            else
+            {
+                // make bots move
+                board[row][col] = 'x';
+
+                //sense player x run min algorithim first
+                //due to it handling placing player o
+                int moveValue = FindBestMove(board, false, MIN, MAX);
+
+                // undo
+                board[row][col] = '_';
+
+                // if value of curent move is less then the best value
+                // update it
+                if (moveValue < best)
+                {
+                    best = moveValue;
+                    move = action;
                 }
             }
         }
     }
-    std::cout << "\n<<< the optimal move is: " << move.first << ", " << move.second << " >>>\n";
+
     return move;
 }

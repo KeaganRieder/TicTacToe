@@ -87,14 +87,14 @@ void SelectToken(Board *board)
         std::cin >> token;
         if (token == 'x' || token == 'X')
         {
-            board->SetPlayerIcon('X');
-            board->SetBotIcon('O');
+            board->SetPlayerIcon('x');
+            board->SetBotIcon('o');
             break;
         }
         else if (token == 'o' || token == 'O')
         {
-            board->SetPlayerIcon('O');
-            board->SetBotIcon('X');
+            board->SetPlayerIcon('o');
+            board->SetBotIcon('x');
             break;
         }
         else
