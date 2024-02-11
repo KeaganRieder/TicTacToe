@@ -4,6 +4,19 @@ TicTacBot::TicTacBot(char botIcon, char playerIcon)
 {
     this->botIcon = botIcon;
     this->playerIcon = playerIcon;
+
+    //initalize all possible actions
+    for (int row = 0; row < BOARD_SIZE; row++)
+    {
+        for (int col = 0; col < BOARD_SIZE; col++)
+        {
+            std::pair<int,int> move;
+            move.first = row;
+            move.second = col;
+            possibleActions.push_back(move);
+        }
+    }
+    
 }
 TicTacBot::~TicTacBot()
 {
@@ -82,6 +95,8 @@ int TicTacBot::DoMaxTurn(Board board, int depth, int alpha, int beta)
     return bestMove;
 }
 
+//rewrite this to be all possible moves rather then
+// how it is
 int TicTacBot::DoMinTurn(Board board, int depth, int alpha, int beta)
 {
     int bestMove = MAX;

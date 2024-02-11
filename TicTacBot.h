@@ -2,10 +2,13 @@
 #define TICTACBOT_H
 
 #include "Board.h"
-#include "map"
+// #include "map>
+#include <vector>
 
 const int MAX = 1000;
 const int MIN = -1000;
+
+//https://medium.com/chat-gpt-now-writes-all-my-articles/advanced-ai-alpha-beta-pruning-in-python-through-tic-tac-toe-70bb0b15db05#:~:text=In%20summary%2C%20alpha%2Dbeta%20pruning,with%20challenging%20and%20rewarding%20experiences.
 
 // Summary
 // defining function for used by the tic tac toe bot
@@ -17,6 +20,11 @@ private:
     bool isMax;
     char botIcon;
     char playerIcon;
+
+    //all posible actions. action are represnted as a pair in which
+    // the first element is the rows, well the second represnted 
+    // the col
+    std::vector<std::pair<int,int>> possibleActions;
 
 public:
     TicTacBot(char botIcon, char playerIcon);
