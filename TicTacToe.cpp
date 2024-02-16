@@ -26,7 +26,7 @@ bool playerTurn = true;
 void SelectToken(Board *board);
 
 // outputs result of game
-void PrintGameResults(Board *board);
+void FlipCoin();
 
 // game loop determining who plays
 void Play(Board *board, TicTacBot *bot);
@@ -46,7 +46,9 @@ int main()
 
     SelectToken(board);
     bot = new TicTacBot(board->GetBotIcon(), board->GetPlayerIcon());
+    FlipCoin();
 
+    //running game
     while (true)
     {
         Play(board, bot);
@@ -76,7 +78,6 @@ int main()
 //
 void SelectToken(Board *board)
 {
-
     char token;
 
     std::cout << "\nPlease select if your 'x' or 'o' \n> ";
@@ -100,9 +101,65 @@ void SelectToken(Board *board)
         else
         {
             std::cout << "\n" << token
-                      << " Isn't valid please input valid choices: 'x' or 'o' \n > ";
+                      << " Isn't valid please input valid choices: 'x' or 'o' \n> ";
         }
     }
+}
+
+void FlipCoin(){
+    char flipChoice;
+    char flipResults;
+    int flipVal;
+
+    std::cout << "\nHeads (input as h) or tails (input as t) \n>";
+
+    // making sure inputs valid
+    while (true)
+    {
+        std::cin >> flipChoice;
+        if (flipChoice == 'h' || flipChoice == 'H')
+        {
+            flipChoice = 'h';
+            break;
+        }
+        else if (flipChoice == 't' || flipChoice == 't')
+        {
+            flipChoice = 't';
+            break;
+        }
+        else
+        {
+            std::cout << "\n" << flipChoice
+                      << " Isn't valid please input Heads (input as h) or tails (input as t) \n> ";
+        }
+    }
+
+
+    //flipping coin flip results
+    std::cout << "\nFliping Coin \n";
+    flipVal = rand() % 2;
+    if (flipVal == 1)
+    {
+        std::cout << "\nIt's  Heads\n";
+        flipResults = 'h';
+    }
+    else
+    {
+        std::cout << "\nIt's Tails\n";
+        flipResults = 't';
+    }
+
+    //checking to see if flip was correct
+    if (flipChoice == flipResults)
+    {
+        std::cout << "\nPlayer goes first! \n";
+        playerTurn = true;
+    }
+    else
+    {
+        std::cout << "\n Tic Tac Bot goes first! \n";
+        playerTurn = false;
+    }    
 }
 
 void Play(Board *board, TicTacBot *bot)
@@ -163,6 +220,6 @@ void PrintGameResults(Board& board)
     }
     else
     {
-        std::cout << "No One \n";
+        std::cout << "No One... it's a tie \n";
     }
 }

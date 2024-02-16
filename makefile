@@ -36,8 +36,11 @@ $(MAIN).o: $(MAIN).cpp $(CLASS).h  $(CLASS2).h
 	$(CC) $(CFLAGS) -c $(MAIN).cpp
 
 #clean targets  
-clean:
-	rm -rf *~ *.o
+cleanLinix:
+	rm -rf *.o *.exe
+	
+cleanWin:
+	del *.o *.exe
 
-clean-all: clean
-	rm -rf ${PROGRAM_NAME} 
+
+	

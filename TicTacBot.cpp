@@ -154,7 +154,7 @@ std::pair<int, int> TicTacBot::PerformTurn(Board board)
 
                 // if value of curent move is greater then the best value
                 // update it
-                if (moveValue > best)
+                if (moveValue >= best)
                 {
                     best = moveValue;
                     move = action;
@@ -176,7 +176,7 @@ std::pair<int, int> TicTacBot::PerformTurn(Board board)
 
                 // if value of curent move is less then the best value
                 // update it
-                if (moveValue < best)
+                if (moveValue <= best)
                 {
                     best = moveValue;
                     move = action;
