@@ -111,7 +111,7 @@ void FlipCoin(){
     char flipResults;
     int flipVal;
 
-    std::cout << "\nHeads (input as h) or tails (input as t) \n>";
+    std::cout << "\nHeads (input as h) or tails (input as t) \n> ";
 
     // making sure inputs valid
     while (true)
