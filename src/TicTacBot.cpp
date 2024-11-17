@@ -35,14 +35,14 @@ int TicTacBot::FindBestMove(Board board, bool isMax, int alpha, int beta)
     {
         return score;
     }
-    // chekc if no spaces are left
+    // check if no spaces are left
     else if (!board.SpacesLeft())
     {
         // tie sense no one won
         return 0;
     }
 
-    // if none of the above contunie recursion
+    // if none of the above continue recursion
     // bouncing back and forth between min and max
     if (isMax)
     {

@@ -3,44 +3,92 @@
 # programs and their associated classes
 PROGRAM_NAME = TicTacToe
 
-CLASS = Board
-CLASS2 = TicTacBot
-MAIN = TicTacToe
 
-#compiler info
-CC=g++
-CC_VERSION= -std=c++11
-CC_FLAGS= $(CC_VERSION) -Wall
+INCLUDE_DIR = include
+SRC_DIR = src
+OBJ_DIR = obj
 
-#files for Projects
-# OBJS = $(CLASS).0 $(CLASS2).0 $(MAIN).0 $(PROGRAM_NAME).0
+SOURCE_FILES = $(wildcard $(SRC_DIR)/*.cpp)
+OBJECT_FILES = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SOURCE_FILES))
 
-# Default goal
-.DEFAULT_GOAL := all
+LIBS = # Add necessary libraries here, e.g., -lm, -lGL, etc.
 
-all: $(PROGRAM_NAME) 
+################################################################################
+# Compiler setup
+################################################################################
 
-$(PROGRAM_NAME): $(CLASS).o $(CLASS2).o $(MAIN).o 
-	$(CC) $(CFLAGS) -o $(PROGRAM_NAME) $(CLASS).o $(CLASS2).o $(MAIN).o
+# Compiler info
+CC = g++
+CC_VERSION = -std=c++11
+INCLUDE = -I$(INCLUDE_DIR) 
+CC_FLAGS = $(CC_VERSION) $(INCLUDE) -static
 
-# making class 1
-$(CLASS).o: $(CLASS).cpp $(CLASS).h
-	$(CC) $(CFLAGS) -c $(CLASS).cpp
+OS_NAME := $(shell uname -s || echo Windows_NT)
 
-# making class 2
-$(CLASS2).o: $(CLASS2).cpp $(CLASS2).h
-	$(CC) $(CFLAGS) -c $(CLASS2).cpp
+# If operating system is Linux
+ifeq ($(OS_NAME), Linux)
+    BUILD_TARGET = Compile_Project
+    CLEANTARGET = linux_clean
 
-# making main
-$(MAIN).o: $(MAIN).cpp $(CLASS).h  $(CLASS2).h
-	$(CC) $(CFLAGS) -c $(MAIN).cpp
+# If operating system is Windows / MINGW64
+else ifeq ($(OS_NAME), Windows_NT)
+    BUILD_TARGET = Compile_Project
+    CLEANTARGET = win_clean
 
-#clean targets  
-cleanLinix:
-	rm -rf *.o *.exe
-	
-cleanWin:
-	del *.o *.exe
+# Operating system is unknown/not set up for building
+else
+    CC_FLAGS += -DUNKNOWN
+    BUILD_TARGET = unknown_build
+    CLEANTARGET = unknown_clean
 
+endif
+
+################################################################################
+# Build targets
+################################################################################
+
+# Default Goal
+.DEFAULT_GOAL := All
+.PHONY: All clean linux_clean win_clean unknown_clean
+
+################################################################################
+# Compilation targets
+################################################################################
+
+All: $(BUILD_TARGET)
+
+# Build for Linux or Windows systems 
+Compile_Project: $(PROGRAM_NAME)
+
+$(PROGRAM_NAME): $(OBJECT_FILES) $(PROGRAM_NAME).cpp
+	$(CC) $(CC_FLAGS) -o $@ $^ $(LIBS)
+
+# Rule to compile .o files from .cpp files
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(INCLUDE_DIR)/*.h | $(OBJ_DIR)
+	$(CC) $(CC_FLAGS) -c $< -o $@
+
+# Create obj directory if it doesn't exist
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
+
+# Build for unknown or unconfigured system
+unknown_build:
+	@echo "Can't build. $(OS_NAME) is unknown or not configured."
+
+################################################################################
+# Clean-up targets
+################################################################################
+
+clean: $(CLEANTARGET)
+
+win_clean:
+	rmdir /S /Q $(OBJ_DIR) || true
+	del *.o *.exe || true
+
+linux_clean:
+	rm -rf $(OBJ_DIR) *.o *.exe
+
+unknown_clean:
+	@echo "No clean-up for unknown system."
 
 	
